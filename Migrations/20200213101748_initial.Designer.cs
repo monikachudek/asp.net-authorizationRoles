@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using authorizationRoles.Data;
 
 namespace authorizationRoles.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200213101748_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,14 +240,8 @@ namespace authorizationRoles.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OwnerID")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("Zip")
                         .HasColumnType("nvarchar(max)");
@@ -263,7 +259,6 @@ namespace authorizationRoles.Migrations
                             Email = "debra@example.com",
                             Name = "Debra Garcia",
                             State = "WA",
-                            Status = 0,
                             Zip = "10999"
                         },
                         new
@@ -274,7 +269,6 @@ namespace authorizationRoles.Migrations
                             Email = "thorsten@example.com",
                             Name = "Thorsten Weinrich",
                             State = "WA",
-                            Status = 0,
                             Zip = "10999"
                         });
                 });

@@ -10,8 +10,8 @@ using authorizationRoles.Data;
 namespace authorizationRoles.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200212175342_MyFirstMigration")]
-    partial class MyFirstMigration
+    [Migration("20200213102231_userID_status")]
+    partial class userID_status
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -164,10 +164,12 @@ namespace authorizationRoles.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -204,10 +206,12 @@ namespace authorizationRoles.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -236,8 +240,14 @@ namespace authorizationRoles.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OwnerID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Zip")
                         .HasColumnType("nvarchar(max)");
@@ -255,6 +265,7 @@ namespace authorizationRoles.Migrations
                             Email = "debra@example.com",
                             Name = "Debra Garcia",
                             State = "WA",
+                            Status = 0,
                             Zip = "10999"
                         },
                         new
@@ -265,6 +276,7 @@ namespace authorizationRoles.Migrations
                             Email = "thorsten@example.com",
                             Name = "Thorsten Weinrich",
                             State = "WA",
+                            Status = 0,
                             Zip = "10999"
                         });
                 });
