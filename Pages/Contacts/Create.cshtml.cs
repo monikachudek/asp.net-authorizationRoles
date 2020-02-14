@@ -8,16 +8,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using authorizationRoles.Data;
 using authorizationRoles.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNet.Identity.EntityFramework;
+using authorizationRoles.Authorization;
 
 namespace authorizationRoles.Pages.Contacts
 {
-    public class CreateModel : PageModel
+    public class CreateModel : DI_BasePageModel
     {
-        private readonly ApplicationDbContext _context;
-
-        public CreateModel(authorizationRoles.Data.ApplicationDbContext context)
+        public CreateModel(
+            ApplicationDbContext context,
+            IAuthorizationService authorizationService)
+            : base(context, authorizationService)
         {
-            _context = context;
         }
 
         public IActionResult OnGet()
@@ -46,8 +49,17 @@ namespace authorizationRoles.Pages.Contacts
 
             Contact.OwnerID = User.Identity.GetUserId();
 
-            _context.Contact.Add(Contact);
-            await _context.SaveChangesAsync();
+            // requires using ContactManager.Authorization;
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(
+                                                        User, Contact,
+                                                        ContactOperations.Create);
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
+
+            Context.Contact.Add(Contact);
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

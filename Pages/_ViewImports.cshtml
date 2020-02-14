@@ -1,5 +1,12 @@
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
 @using authorizationRoles
+@using authorizationRoles.Data
+@using authorizationRoles.Models
+@using authorizationRoles.Authorization;
+
 
 @namespace authorizationRoles.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject IAuthorizationService AuthorizationService

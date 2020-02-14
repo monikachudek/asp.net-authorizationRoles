@@ -1,29 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using authorizationRoles.Data;
 using authorizationRoles.Models;
+using Microsoft.AspNetCore.Authorization;
+using authorizationRoles.Authorization;
+using Microsoft.AspNet.Identity;
 
 namespace authorizationRoles.Pages.Contacts
 {
-    public class IndexModel : PageModel
+    public class IndexModel : DI_BasePageModel
     {
-        private readonly authorizationRoles.Data.ApplicationDbContext _context;
-
-        public IndexModel(authorizationRoles.Data.ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context,
+                          IAuthorizationService authorizationService)
+        : base(context, authorizationService)
         {
-            _context = context;
         }
 
         public IList<Contact> Contact { get;set; }
 
         public async Task OnGetAsync()
         {
-            Contact = await _context.Contact.ToListAsync();
+            var contacts = from c in Context.Contact
+                           select c;
+
+            var isAuthorized = User.IsInRole(Authorization.Constants.ContactManagersRole) ||
+                               User.IsInRole(Authorization.Constants.ContactAdministratorsRole);
+
+            var currentUserId = User.Identity.GetUserId();
+
+            // Only approved contacts are shown UNLESS you're authorized to see them
+            // or you are the owner.
+            if (!isAuthorized)
+            {
+                contacts = contacts.Where(c => c.Status == ContactStatus.Approved
+                                            || c.OwnerID == currentUserId);
+            }
+
+            Contact = await contacts.ToListAsync();
         }
     }
 }
