@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using authorizationRoles.Data;
 using authorizationRoles.Models;
+using Microsoft.AspNet.Identity;
 
 namespace authorizationRoles.Pages.Contacts
 {
@@ -42,6 +43,8 @@ namespace authorizationRoles.Pages.Contacts
             {
                 return Page();
             }
+
+            Contact.OwnerID = User.Identity.GetUserId();
 
             _context.Contact.Add(Contact);
             await _context.SaveChangesAsync();
