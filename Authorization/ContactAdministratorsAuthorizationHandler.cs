@@ -14,7 +14,7 @@ namespace authorizationRoles.Authorization
     {
         protected override Task HandleRequirementAsync(
                                               AuthorizationHandlerContext context,
-                                    OperationAuthorizationRequirement requirement,
+                                     OperationAuthorizationRequirement requirement,
                                      Contact resource)
         {
             if (context.User == null)

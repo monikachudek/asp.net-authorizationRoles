@@ -8,16 +8,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using authorizationRoles.Data;
 using authorizationRoles.Models;
+using Microsoft.AspNetCore.Authorization;
+using authorizationRoles.Authorization;
+using Microsoft.AspNet.Identity;
 
 namespace authorizationRoles.Pages.Contacts
 {
-    public class EditModel : PageModel
+    public class EditModel : DI_BasePageModel
     {
-        private readonly authorizationRoles.Data.ApplicationDbContext _context;
-
-        public EditModel(authorizationRoles.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context,
+                         IAuthorizationService authorizationService)
+            : base(context, authorizationService)
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -25,51 +27,58 @@ namespace authorizationRoles.Pages.Contacts
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
+            Contact = await Context.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
+
+            if (Contact == null) return BadRequest();
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User,
+                                                                         Contact,
+                                                                         ContactOperations.Update);
+
+            if (!isAuthorized.Succeeded)
             {
-                return NotFound();
+                return Forbid();
             }
 
-            Contact = await _context.Contact.FirstOrDefaultAsync(m => m.ContactId == id);
-
-            if (Contact == null)
-            {
-                return NotFound();
-            }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Contact).State = EntityState.Modified;
+            var contact = await Context.Contact.AsNoTracking().FirstOrDefaultAsync(c => c.ContactId == id);
 
-            try
+            if (contact == null) return NotFound();
+
+            var isAuthorized = await AuthorizationService.AuthorizeAsync(User,
+                                                                         contact,
+                                                                         ContactOperations.Update);
+
+            if (!isAuthorized.Succeeded)
             {
-                await _context.SaveChangesAsync();
+                return Forbid();
             }
-            catch (DbUpdateConcurrencyException)
+
+            Contact.OwnerID = contact.OwnerID;
+            Context.Attach(Contact).State = EntityState.Modified;
+
+            if(Contact.Status == ContactStatus.Approved)
             {
-                if (!ContactExists(Contact.ContactId))
+                var canApproved = await AuthorizationService.AuthorizeAsync(User, Contact, ContactOperations.Approve);
+                if (!canApproved.Succeeded)
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
+                    Contact.Status = ContactStatus.Submittet;
                 }
             }
+
+            await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
-        }
-
-        private bool ContactExists(int id)
-        {
-            return _context.Contact.Any(e => e.ContactId == id);
         }
     }
 }

@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using authorizationRoles.Data;
 using authorizationRoles.Models;
+using Microsoft.AspNetCore.Authorization;
+using authorizationRoles.Authorization;
+using Microsoft.AspNet.Identity;
 
 namespace authorizationRoles.Pages.Contacts
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel : DI_BasePageModel
     {
-        private readonly authorizationRoles.Data.ApplicationDbContext _context;
-
-        public DeleteModel(authorizationRoles.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context,
+                           IAuthorizationService authorizationService)
+            : base(context, authorizationService)
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -24,35 +26,37 @@ namespace authorizationRoles.Pages.Contacts
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            Contact = await Context.Contact.
+                FirstOrDefaultAsync(c => c.ContactId == id);
 
-            Contact = await _context.Contact.FirstOrDefaultAsync(m => m.ContactId == id);
+            if (Contact == null) return NotFound();
 
-            if (Contact == null)
-            {
-                return NotFound();
-            }
+            var isAuthorized = await AuthorizationService.
+                AuthorizeAsync(User, Contact, ContactOperations.Delete);
+
+            if (!isAuthorized.Succeeded) return Forbid();
+
             return Page();
+
+
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var contact = await Context.Contact.AsNoTracking().
+                 FirstOrDefaultAsync(c => c.ContactId == id);
 
-            Contact = await _context.Contact.FindAsync(id);
+            if (contact == null) return NotFound();
 
-            if (Contact != null)
-            {
-                _context.Contact.Remove(Contact);
-                await _context.SaveChangesAsync();
-            }
+            var isAuthorized = await AuthorizationService.
+                AuthorizeAsync(User, contact, ContactOperations.Delete);
 
+            if (!isAuthorized.Succeeded) return Forbid();
+
+            Context.Contact.Remove(contact);
+
+            await Context.SaveChangesAsync();
+            
             return RedirectToPage("./Index");
         }
     }
