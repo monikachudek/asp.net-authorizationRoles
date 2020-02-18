@@ -7,6 +7,7 @@ using authorizationRoles.Models;
 using Microsoft.AspNetCore.Authorization;
 using authorizationRoles.Authorization;
 using Microsoft.AspNet.Identity;
+using System;
 
 namespace authorizationRoles.Pages.Contacts
 {
@@ -21,7 +22,7 @@ namespace authorizationRoles.Pages.Contacts
         public IList<Contact> Contacts { get;set; }
 
         public string NameSort { get; set; }
-       // public string StatusSort { get; set; }
+        public string StatusSort { get; set; }
 
         public async Task OnGetAsync(string sortOrder)
         {
@@ -43,11 +44,18 @@ namespace authorizationRoles.Pages.Contacts
 
             // sorting
             NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            StatusSort = sortOrder == "Status" ? "status_desc" : "Status";
             
             switch (sortOrder)
             {
                 case "name_desc":
                     contacts = contacts.OrderByDescending(c => c.LastName);
+                    break;
+                case "Status":
+                    contacts = contacts.OrderBy(c => c.Status);
+                    break;
+                case "status_desc":
+                    contacts = contacts.OrderByDescending(c => c.Status);
                     break;
                 default:
                     contacts = contacts.OrderBy(c => c.LastName);

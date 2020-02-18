@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-setOrder="@Model.NameSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort">
                     @Html.DisplayNameFor(model => model.Contacts[0].LastName)
                 </a>
             </th>
@@ -37,7 +37,9 @@
                 @Html.DisplayNameFor(model => model.Contacts[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contacts[0].Status)
+                <a asp-page="./Index" asp-route-sortOrder="@Model.StatusSort">
+                    @Html.DisplayNameFor(model => model.Contacts[0].Status)
+                </a>
             </th>
             <th></th>
         </tr>
