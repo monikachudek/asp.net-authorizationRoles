@@ -23,8 +23,9 @@ namespace authorizationRoles.Pages.Contacts
 
         public string NameSort { get; set; }
         public string StatusSort { get; set; }
+        public string CurrentFilter { get; set; }
 
-        public async Task OnGetAsync(string sortOrder)
+        public async Task OnGetAsync(string sortOrder, string searchString)
         {
             var contacts = from c in Context.Contact
                            select c;
@@ -45,6 +46,15 @@ namespace authorizationRoles.Pages.Contacts
             // sorting
             NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             StatusSort = sortOrder == "Status" ? "status_desc" : "Status";
+
+            // filter
+            CurrentFilter = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                contacts = contacts.Where(c => c.FirstName.Contains(searchString) ||
+                            c.LastName.Contains(searchString));
+            }
             
             switch (sortOrder)
             {
