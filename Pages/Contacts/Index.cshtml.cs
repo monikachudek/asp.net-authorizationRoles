@@ -18,9 +18,12 @@ namespace authorizationRoles.Pages.Contacts
         {
         }
 
-        public IList<Contact> Contact { get;set; }
+        public IList<Contact> Contacts { get;set; }
 
-        public async Task OnGetAsync()
+        public string NameSort { get; set; }
+       // public string StatusSort { get; set; }
+
+        public async Task OnGetAsync(string sortOrder)
         {
             var contacts = from c in Context.Contact
                            select c;
@@ -38,7 +41,21 @@ namespace authorizationRoles.Pages.Contacts
                                             || c.OwnerID == currentUserId);
             }
 
-            Contact = await contacts.ToListAsync();
+            // sorting
+            NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    contacts = contacts.OrderByDescending(c => c.Name);
+                    break;
+                default:
+                    contacts = contacts.OrderBy(c => c.Name);
+                    break;
+            }
+
+
+            Contacts = await contacts.ToListAsync();
         }
     }
 }
