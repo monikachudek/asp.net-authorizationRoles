@@ -20,7 +20,6 @@
         <p>
             <a asp-page="./Index">Back to full list</a>
         </p>
-        </p>
     </div>
 </form>
 
@@ -28,7 +27,8 @@
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
                     @Html.DisplayNameFor(model => model.Contacts[0].LastName)
                 </a>
             </th>
@@ -51,7 +51,8 @@
                 @Html.DisplayNameFor(model => model.Contacts[0].Email)
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.StatusSort">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.StatusSort"
+                   asp-route-currentFilter="@Model.CurrentFilter">
                     @Html.DisplayNameFor(model => model.Contacts[0].Status)
                 </a>
             </th>
@@ -109,3 +110,20 @@
         }
     </tbody>
 </table>
+
+@{ 
+    var prevDisabled = !Model.Contacts.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Contacts.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Contacts.PageIndex-1)"
+   asp-route-CurrentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @prevDisabled">Previous</a>
+
+<a asp-page="./Index"
+   asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-pageIndex="@(Model.Contacts.PageIndex+1)"
+   asp-route-CurrentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @nextDisabled">Next</a>

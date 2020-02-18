@@ -19,13 +19,17 @@ namespace authorizationRoles.Pages.Contacts
         {
         }
 
-        public IList<Contact> Contacts { get;set; }
+        public PaginatedList<Contact> Contacts { get;set; }
 
         public string NameSort { get; set; }
         public string StatusSort { get; set; }
         public string CurrentFilter { get; set; }
+        public string CurrentSort { get; set; }
 
-        public async Task OnGetAsync(string sortOrder, string searchString)
+        public async Task OnGetAsync(string sortOrder,
+                                     string currentFilter,
+                                     string searchString,
+                                     int? pageIndex)
         {
             var contacts = from c in Context.Contact
                            select c;
@@ -46,6 +50,10 @@ namespace authorizationRoles.Pages.Contacts
             // sorting
             NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             StatusSort = sortOrder == "Status" ? "status_desc" : "Status";
+
+            //pagination
+            if (searchString != null) pageIndex = 1;
+            else searchString = currentFilter;
 
             // filter
             CurrentFilter = searchString;
@@ -72,8 +80,15 @@ namespace authorizationRoles.Pages.Contacts
                     break;
             }
 
+            int pageSize = 3;
+            var count = await contacts.CountAsync();
 
-            Contacts = await contacts.ToListAsync();
+            int pageIndexUse = (pageIndex == null) ? 1: (int)pageIndex;
+
+            var items = await contacts.Skip(
+                (pageIndexUse - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            Contacts = new  PaginatedList<Contact>(items, count, pageIndexUse, pageSize);
         }
     }
 }
