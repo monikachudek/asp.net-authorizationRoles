@@ -47,10 +47,10 @@ namespace authorizationRoles.Pages.Contacts
             switch (sortOrder)
             {
                 case "name_desc":
-                    contacts = contacts.OrderByDescending(c => c.Name);
+                    contacts = contacts.OrderByDescending(c => c.LastName);
                     break;
                 default:
-                    contacts = contacts.OrderBy(c => c.Name);
+                    contacts = contacts.OrderBy(c => c.LastName);
                     break;
             }
 

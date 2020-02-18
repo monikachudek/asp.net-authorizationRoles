@@ -98,7 +98,8 @@ namespace authorizationRoles.Data
             context.Contact.AddRange(
                 new Contact
                 {
-                    Name = "Debra Garcia",
+                    LastName = "Garcia",
+                    FirstName = "Debra",
                     Address = "1234 Main St",
                     City = "Redmond",
                     State = "WA",
@@ -109,7 +110,8 @@ namespace authorizationRoles.Data
                 },
                 new Contact
                 {
-                    Name = "Thorsten Rejected",
+                    FirstName = "Tod",
+                    LastName = "Thorsten",
                     Address = "5678 1st Ave W",
                     City = "Redmond",
                     State = "WA",
@@ -120,7 +122,8 @@ namespace authorizationRoles.Data
                 },
              new Contact
              {
-                 Name = "Yuhong Li Submitted",
+                 FirstName = "Yuhong",
+                 LastName = "Li",
                  Address = "9012 State st",
                  City = "Redmond",
                  State = "WA",
@@ -131,7 +134,8 @@ namespace authorizationRoles.Data
              },
              new Contact
              {
-                 Name = "Jon Orton",
+                 FirstName = "Jon",
+                 LastName = "Orton",
                  Address = "3456 Maple St",
                  City = "Redmond",
                  State = "WA",
@@ -142,7 +146,8 @@ namespace authorizationRoles.Data
              },
              new Contact
              {
-                 Name = "Diliana Alexieva-Bosseva",
+                 FirstName = "Dilian",
+                 LastName = "Alexieva-Bosseva",
                  Address = "7890 2nd Ave E",
                  City = "Redmond",
                  State = "WA",

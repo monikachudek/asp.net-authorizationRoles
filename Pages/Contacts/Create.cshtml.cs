@@ -27,7 +27,8 @@ namespace authorizationRoles.Pages.Contacts
         {
             Contact = new Contact
             {
-                Name = "Rick",
+                FirstName = "Edward",
+                LastName = "Norton",
                 Address = "123 N 456 S",
                 City = "GF",
                 State = "MT",
