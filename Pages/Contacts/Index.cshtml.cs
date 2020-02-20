@@ -80,10 +80,10 @@ namespace authorizationRoles.Pages.Contacts
                     break;
             }
 
-            int pageSize = 3;
-            var count = await contacts.CountAsync();
-
+            int pageSize = 10;
             int pageIndexUse = (pageIndex == null) ? 1: (int)pageIndex;
+
+            var count = await contacts.CountAsync();
 
             var items = await contacts.Skip(
                 (pageIndexUse - 1) * pageSize).Take(pageSize).ToListAsync();
