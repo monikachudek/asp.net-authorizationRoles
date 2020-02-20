@@ -5,7 +5,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Contact List:</h2>
+<h2>Student List:</h2>
 
 
 <div class="row">
@@ -35,46 +35,46 @@
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.NameSort"
                    asp-route-currentFilter="@Model.CurrentFilter">
-                    @Html.DisplayNameFor(model => model.Contacts[0].LastName)
+                    @Html.DisplayNameFor(model => model.Students[0].FullName)
                 </a>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Contacts[0].FirstName)
-            </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.Contacts[0].Address)
+                @Html.DisplayNameFor(model => model.Students[0].FirstName)
+            </th>*@
+            @*<th>
+                @Html.DisplayNameFor(model => model.Students[0].Address)
             </th>*@
             <th>
-                @Html.DisplayNameFor(model => model.Contacts[0].City)
+                @Html.DisplayNameFor(model => model.Students[0].City)
             </th>
             @*<th>
-                @Html.DisplayNameFor(model => model.Contacts[0].State)
+                @Html.DisplayNameFor(model => model.Students[0].State)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Contacts[0].Zip)
+                @Html.DisplayNameFor(model => model.Students[0].Zip)
             </th>*@
             <th>
-                @Html.DisplayNameFor(model => model.Contacts[0].Email)
+                @Html.DisplayNameFor(model => model.Students[0].Email)
             </th>
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.StatusSort"
                    asp-route-currentFilter="@Model.CurrentFilter">
-                    @Html.DisplayNameFor(model => model.Contacts[0].Status)
+                    @Html.DisplayNameFor(model => model.Students[0].Status)
                 </a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Contacts)
+        @foreach (var item in Model.Students)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
+                    @Html.DisplayFor(modelItem => item.FullName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>*@
                 @*<td>
                     @Html.DisplayFor(modelItem => item.Address)
                 </td>*@
@@ -96,20 +96,20 @@
                 <td>
                     @if ((await AuthorizationService.AuthorizeAsync(
                User, item,
-               ContactOperations.Update)).Succeeded)
+               StudentOperations.Update)).Succeeded)
                     {
-                        <a asp-page="./Edit" asp-route-id="@item.ContactId">Edit</a>
+                        <a asp-page="./Edit" asp-route-id="@item.StudentId">Edit</a>
                         <text> | </text>
                     }
 
-                    <a asp-page="./Details" asp-route-id="@item.ContactId">Details</a>
+                    <a asp-page="./Details" asp-route-id="@item.StudentId">Details</a>
 
                     @if ((await AuthorizationService.AuthorizeAsync(
                User, item,
-               ContactOperations.Delete)).Succeeded)
+               StudentOperations.Delete)).Succeeded)
                     {
                         <text> | </text>
-                        <a asp-page="./Delete" asp-route-id="@item.ContactId">Delete</a>
+                        <a asp-page="./Delete" asp-route-id="@item.StudentId">Delete</a>
                     }
                 </td>
             </tr>
@@ -118,18 +118,18 @@
 </table>
 
 @{
-    var prevDisabled = !Model.Contacts.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Contacts.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Students.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Students.HasNextPage ? "disabled" : "";
 }
 
 <a asp-page="./Index"
    asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.Contacts.PageIndex-1)"
+   asp-route-pageIndex="@(Model.Students.PageIndex-1)"
    asp-route-CurrentFilter="@Model.CurrentFilter"
    class="btn btn-primary @prevDisabled">Previous</a>
 
 <a asp-page="./Index"
    asp-route-sortOrder="@Model.CurrentSort"
-   asp-route-pageIndex="@(Model.Contacts.PageIndex+1)"
+   asp-route-pageIndex="@(Model.Students.PageIndex+1)"
    asp-route-CurrentFilter="@Model.CurrentFilter"
    class="btn btn-primary @nextDisabled">Next</a>

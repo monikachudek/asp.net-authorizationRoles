@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using authorizationRoles.Authorization;
 using Microsoft.AspNet.Identity;
 
-namespace authorizationRoles.Pages.Contacts
+namespace authorizationRoles.Pages.Students
 {
     public class EditModel : DI_BasePageModel
     {
@@ -23,17 +23,17 @@ namespace authorizationRoles.Pages.Contacts
         }
 
         [BindProperty]
-        public Contact Contact { get; set; }
+        public Student Student { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            Contact = await Context.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
+            Student = await Context.Students.FirstOrDefaultAsync(c => c.StudentId == id);
 
-            if (Contact == null) return BadRequest();
+            if (Student == null) return BadRequest();
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(User,
-                                                                         Contact,
-                                                                         ContactOperations.Update);
+                                                                         Student,
+                                                                         StudentOperations.Update);
 
             if (!isAuthorized.Succeeded)
             {
@@ -51,28 +51,28 @@ namespace authorizationRoles.Pages.Contacts
                 return Page();
             }
 
-            var contact = await Context.Contact.AsNoTracking().FirstOrDefaultAsync(c => c.ContactId == id);
+            var contact = await Context.Students.AsNoTracking().FirstOrDefaultAsync(c => c.StudentId == id);
 
             if (contact == null) return NotFound();
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(User,
                                                                          contact,
-                                                                         ContactOperations.Update);
+                                                                         StudentOperations.Update);
 
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
 
-            Contact.OwnerID = contact.OwnerID;
-            Context.Attach(Contact).State = EntityState.Modified;
+            Student.OwnerID = contact.OwnerID;
+            Context.Attach(Student).State = EntityState.Modified;
 
-            if(Contact.Status == ContactStatus.Approved)
+            if(Student.Status == StudentStatus.Approved)
             {
-                var canApproved = await AuthorizationService.AuthorizeAsync(User, Contact, ContactOperations.Approve);
+                var canApproved = await AuthorizationService.AuthorizeAsync(User, Student, StudentOperations.Approve);
                 if (!canApproved.Succeeded)
                 {
-                    Contact.Status = ContactStatus.Submittet;
+                    Student.Status = StudentStatus.Submittet;
                 }
             }
 

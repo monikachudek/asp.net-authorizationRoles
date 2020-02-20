@@ -10,7 +10,7 @@ using authorizationRoles.Models;
 using Microsoft.AspNetCore.Authorization;
 using authorizationRoles.Authorization;
 
-namespace authorizationRoles.Pages.Contacts
+namespace authorizationRoles.Pages.Students
 {
     public class DetailsModel : DI_BasePageModel
     {
@@ -20,39 +20,39 @@ namespace authorizationRoles.Pages.Contacts
         {
         }
 
-        public Contact Contact { get; set; }
+        public Student Student { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            Contact = await Context.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
+            Student = await Context.Students.FirstOrDefaultAsync(c => c.StudentId == id);
 
-            if (Contact == null) return NotFound();
+            if (Student == null) return NotFound();
 
-            var isAuthorized = (Contact.Status == ContactStatus.Approved ||
-                                User.IsInRole(Constants.ContactAdministratorsRole) ||
-                                User.IsInRole(Constants.ContactManagersRole));
+            var isAuthorized = (Student.Status == StudentStatus.Approved ||
+                                User.IsInRole(Constants.StudentAdministratorsRole) ||
+                                User.IsInRole(Constants.StudentManagersRole));
 
             if (!isAuthorized) return Forbid();
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int id, ContactStatus status)
+        public async Task<IActionResult> OnPostAsync(int id, StudentStatus status)
         {
-            var contact = await Context.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
+            var contact = await Context.Students.FirstOrDefaultAsync(c => c.StudentId == id);
 
             if (contact == null) return BadRequest();
 
-            var contactOperation = (status == ContactStatus.Approved)
-                                           ? ContactOperations.Approve
-                                           : ContactOperations.Reject;
+            var contactOperation = (status == StudentStatus.Approved)
+                                           ? StudentOperations.Approve
+                                           : StudentOperations.Reject;
 
             var isAuthorized = await AuthorizationService.AuthorizeAsync(User, contact, contactOperation);
 
             if (!isAuthorized.Succeeded) return Forbid();
 
             contact.Status = status;
-            Context.Contact.Update(contact);
+            Context.Students.Update(contact);
             await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

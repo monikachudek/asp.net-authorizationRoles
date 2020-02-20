@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace authorizationRoles.Authorization
 {
-    public static class ContactOperations
+    public static class StudentOperations
     {
         public static OperationAuthorizationRequirement Create =
           new OperationAuthorizationRequirement { Name = Constants.CreateOperationName };
@@ -32,7 +32,7 @@ namespace authorizationRoles.Authorization
         public static readonly string ApproveOperationName = "Approve";
         public static readonly string RejectOperationName = "Reject";
 
-        public static readonly string ContactAdministratorsRole = "ContactAdministrators";
-        public static readonly string ContactManagersRole = "ContactManagers";
+        public static readonly string StudentAdministratorsRole = "StudentAdministrators";
+        public static readonly string StudentManagersRole = "StudentManagers";
     }
 }

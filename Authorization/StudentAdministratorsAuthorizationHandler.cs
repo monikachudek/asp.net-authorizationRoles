@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace authorizationRoles.Authorization
 {
-    public class ContactAdministratorsAuthorizationHandler
-                    : AuthorizationHandler<OperationAuthorizationRequirement, Contact>
+    public class StudentAdministratorsAuthorizationHandler
+                    : AuthorizationHandler<OperationAuthorizationRequirement, Student>
     {
         protected override Task HandleRequirementAsync(
                                               AuthorizationHandlerContext context,
                                      OperationAuthorizationRequirement requirement,
-                                     Contact resource)
+                                     Student resource)
         {
             if (context.User == null)
             {
@@ -23,7 +23,7 @@ namespace authorizationRoles.Authorization
             }
 
             // Administrators can do anything.
-            if (context.User.IsInRole(Constants.ContactAdministratorsRole))
+            if (context.User.IsInRole(Constants.StudentAdministratorsRole))
             {
                 context.Succeed(requirement);
             }

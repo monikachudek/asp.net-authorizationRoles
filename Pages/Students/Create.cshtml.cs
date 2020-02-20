@@ -12,9 +12,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNet.Identity.EntityFramework;
 using authorizationRoles.Authorization;
 
-namespace authorizationRoles.Pages.Contacts
+namespace authorizationRoles.Pages.Students
 {
     public class CreateModel : DI_BasePageModel
+
     {
         public CreateModel(
             ApplicationDbContext context,
@@ -25,7 +26,7 @@ namespace authorizationRoles.Pages.Contacts
 
         public IActionResult OnGet()
         {
-            Contact = new Contact
+            Student = new Student
             {
                 FirstName = "Edward",
                 LastName = "Norton",
@@ -39,7 +40,7 @@ namespace authorizationRoles.Pages.Contacts
         }
 
         [BindProperty]
-        public Contact Contact { get; set; }
+        public Student Student { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -48,18 +49,18 @@ namespace authorizationRoles.Pages.Contacts
                 return Page();
             }
 
-            Contact.OwnerID = User.Identity.GetUserId();
+            Student.OwnerID = User.Identity.GetUserId();
 
-            // requires using ContactManager.Authorization;
+            // requires using StudentManager.Authorization;
             var isAuthorized = await AuthorizationService.AuthorizeAsync(
-                                                        User, Contact,
-                                                        ContactOperations.Create);
+                                                        User, Student,
+                                                        StudentOperations.Create);
             if (!isAuthorized.Succeeded)
             {
                 return Forbid();
             }
 
-            Context.Contact.Add(Contact);
+            Context.Students.Add(Student);
             await Context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

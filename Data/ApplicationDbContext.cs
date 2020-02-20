@@ -16,7 +16,9 @@ namespace authorizationRoles.Data
         {
 
         }
-        public DbSet<Contact> Contact { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Course> Courses { get; set; }
 
     }
 }

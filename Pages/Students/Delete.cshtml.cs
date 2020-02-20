@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using authorizationRoles.Authorization;
 using Microsoft.AspNet.Identity;
 
-namespace authorizationRoles.Pages.Contacts
+namespace authorizationRoles.Pages.Students
 {
     public class DeleteModel : DI_BasePageModel
     {
@@ -22,17 +22,17 @@ namespace authorizationRoles.Pages.Contacts
         }
 
         [BindProperty]
-        public Contact Contact { get; set; }
+        public Student Student { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            Contact = await Context.Contact.
-                FirstOrDefaultAsync(c => c.ContactId == id);
+            Student = await Context.Students.
+                FirstOrDefaultAsync(c => c.StudentId == id);
 
-            if (Contact == null) return NotFound();
+            if (Student == null) return NotFound();
 
             var isAuthorized = await AuthorizationService.
-                AuthorizeAsync(User, Contact, ContactOperations.Delete);
+                AuthorizeAsync(User, Student, StudentOperations.Delete);
 
             if (!isAuthorized.Succeeded) return Forbid();
 
@@ -43,17 +43,17 @@ namespace authorizationRoles.Pages.Contacts
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            var contact = await Context.Contact.AsNoTracking().
-                 FirstOrDefaultAsync(c => c.ContactId == id);
+            var contact = await Context.Students.AsNoTracking().
+                 FirstOrDefaultAsync(c => c.StudentId == id);
 
             if (contact == null) return NotFound();
 
             var isAuthorized = await AuthorizationService.
-                AuthorizeAsync(User, contact, ContactOperations.Delete);
+                AuthorizeAsync(User, contact, StudentOperations.Delete);
 
             if (!isAuthorized.Succeeded) return Forbid();
 
-            Context.Contact.Remove(contact);
+            Context.Students.Remove(contact);
 
             await Context.SaveChangesAsync();
             

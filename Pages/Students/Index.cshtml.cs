@@ -9,7 +9,7 @@ using authorizationRoles.Authorization;
 using Microsoft.AspNet.Identity;
 using System;
 
-namespace authorizationRoles.Pages.Contacts
+namespace authorizationRoles.Pages.Students
 {
     public class IndexModel : DI_BasePageModel
     {
@@ -19,7 +19,7 @@ namespace authorizationRoles.Pages.Contacts
         {
         }
 
-        public PaginatedList<Contact> Contacts { get;set; }
+        public PaginatedList<Student> Students { get;set; }
 
         public string NameSort { get; set; }
         public string StatusSort { get; set; }
@@ -31,11 +31,11 @@ namespace authorizationRoles.Pages.Contacts
                                      string searchString,
                                      int? pageIndex)
         {
-            var contacts = from c in Context.Contact
+            var contacts = from c in Context.Students
                            select c;
 
-            var isAuthorized = User.IsInRole(Authorization.Constants.ContactManagersRole) ||
-                               User.IsInRole(Authorization.Constants.ContactAdministratorsRole);
+            var isAuthorized = User.IsInRole(Authorization.Constants.StudentManagersRole) ||
+                               User.IsInRole(Authorization.Constants.StudentAdministratorsRole);
 
             var currentUserId = User.Identity.GetUserId();
 
@@ -43,7 +43,7 @@ namespace authorizationRoles.Pages.Contacts
             // or you are the owner.
             if (!isAuthorized)
             {
-                contacts = contacts.Where(c => c.Status == ContactStatus.Approved
+                contacts = contacts.Where(c => c.Status == StudentStatus.Approved
                                             || c.OwnerID == currentUserId);
             }
 
@@ -88,7 +88,7 @@ namespace authorizationRoles.Pages.Contacts
             var items = await contacts.Skip(
                 (pageIndexUse - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            Contacts = new  PaginatedList<Contact>(items, count, pageIndexUse, pageSize);
+            Students = new  PaginatedList<Student>(items, count, pageIndexUse, pageSize);
         }
     }
 }

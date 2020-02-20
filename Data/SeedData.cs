@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-// dotnet aspnet-codegenerator razorpage -m Contact -dc ApplicationDbContext -udl -outDir Pages\Contacts --referenceScriptLibraries
+// dotnet aspnet-codegenerator razorpage -m Student -dc ApplicationDbContext -udl -outDir Pages\Students --referenceScriptLibraries
 
 namespace authorizationRoles.Data
 {
@@ -24,11 +24,11 @@ namespace authorizationRoles.Data
                 // The admin user can do anything
 
                 var adminID = await EnsureUser(serviceProvider, testUserPw, "admin@contoso.com");
-                await EnsureRole(serviceProvider, adminID, "ContactAdministrators");
+                await EnsureRole(serviceProvider, adminID, "StudentAdministrators");
 
                 // allowed user can create and edit contacts that they create
                 var managerID = await EnsureUser(serviceProvider, testUserPw, "manager@contoso.com");
-                await EnsureRole(serviceProvider, managerID, "ContactManagers");
+                await EnsureRole(serviceProvider, managerID, "StudentManagers");
 
                 SeedDB(context, adminID);
             }
@@ -90,74 +90,110 @@ namespace authorizationRoles.Data
 
         public static void SeedDB(ApplicationDbContext context, string adminID)
         {
-            if (context.Contact.Any())
+            if (!context.Students.Any())
             {
-                return;   // DB has been seeded
+                context.Students.AddRange(
+                    new Student
+                    {
+                        FirstName= "Hermiona",
+                        LastName = "Granger",
+                        Address = "1234 Main St",
+                        City = "Redmond",
+                        State = "WA",
+                        Zip = "10999",
+                        Email = "hermiona@example.com",
+                        Status = StudentStatus.Approved,
+                        OwnerID = adminID,
+                        EnrollmentDate = DateTime.Parse("2019-09-01")
+                    },
+                    new Student
+                    {
+                        FirstName = "Harry",
+                        LastName = "Potter",
+                        Address = "5678 1st Ave W",
+                        City = "Redmond",
+                        State = "WA",
+                        Zip = "10999",
+                        Email = "potterh@example.com",
+                        Status = StudentStatus.Rejected,
+                        OwnerID = adminID,
+                        EnrollmentDate = DateTime.Parse("2017-09-01")
+                    },
+                 new Student
+                 {
+                     FirstName = "Ron",
+                     LastName = "Weasley",
+                     Address = "9012 State st",
+                     City = "Redmond",
+                     State = "WA",
+                     Zip = "10999",
+                     Email = "weasleyr@example.com",
+                     Status = StudentStatus.Submittet,
+                     OwnerID = adminID,
+                     EnrollmentDate = DateTime.Parse("2018-09-01")
+                 },
+                 new Student
+                 {
+                     FirstName = "Nevil",
+                     LastName = "Longbotom",
+                     Address = "3456 Maple St",
+                     City = "Redmond",
+                     State = "WA",
+                     Zip = "10999",
+                     Email = "nevil@example.com",
+                     Status = StudentStatus.Approved,
+                     OwnerID = adminID,
+                     EnrollmentDate = DateTime.Parse("2019-09-10")
+                 },
+                 new Student
+                 {
+                     FirstName = "Draco",
+                     LastName = "Malfoy",
+                     Address = "7890 2nd Ave E",
+                     City = "Redmond",
+                     State = "WA",
+                     Zip = "10999",
+                     Email = "malfoy@example.com",
+                     Status = StudentStatus.Approved,
+                     OwnerID = adminID,
+                     EnrollmentDate = DateTime.Parse("2016-09-01")
+                 }
+                 );
+                context.SaveChanges();
             }
 
-            context.Contact.AddRange(
-                new Contact
-                {
-                    LastName = "Garcia",
-                    FirstName = "Debra",
-                    Address = "1234 Main St",
-                    City = "Redmond",
-                    State = "WA",
-                    Zip = "10999",
-                    Email = "debra@example.com",
-                    Status = ContactStatus.Approved,
-                    OwnerID = adminID
-                },
-                new Contact
-                {
-                    FirstName = "Tod",
-                    LastName = "Thorsten",
-                    Address = "5678 1st Ave W",
-                    City = "Redmond",
-                    State = "WA",
-                    Zip = "10999",
-                    Email = "thorsten@example.com",
-                    Status = ContactStatus.Rejected,
-                    OwnerID = adminID
-                },
-             new Contact
-             {
-                 FirstName = "Yuhong",
-                 LastName = "Li",
-                 Address = "9012 State st",
-                 City = "Redmond",
-                 State = "WA",
-                 Zip = "10999",
-                 Email = "yuhong@example.com",
-                 Status = ContactStatus.Submittet,
-                 OwnerID = adminID
-             },
-             new Contact
-             {
-                 FirstName = "Jon",
-                 LastName = "Orton",
-                 Address = "3456 Maple St",
-                 City = "Redmond",
-                 State = "WA",
-                 Zip = "10999",
-                 Email = "jon@example.com",
-                 Status = ContactStatus.Approved,
-                 OwnerID = adminID
-             },
-             new Contact
-             {
-                 FirstName = "Dilian",
-                 LastName = "Alexieva-Bosseva",
-                 Address = "7890 2nd Ave E",
-                 City = "Redmond",
-                 State = "WA",
-                 Zip = "10999",
-                 Email = "diliana@example.com",
-                 Status = ContactStatus.Approved,
-                 OwnerID = adminID
-             }
-             );
-            context.SaveChanges();
+            if (!context.Courses.Any())
+            {
+                context.Courses.AddRange(
+                    new Course { CourseID = 1050, Title = "Transfiguration", Credits = 3 },
+                new Course { CourseID = 4022, Title = "Charms", Credits = 3 },
+                new Course { CourseID = 4041, Title = "Defence Against the Dark Arts", Credits = 3 },
+                new Course { CourseID = 1045, Title = "Flying", Credits = 4 },
+                new Course { CourseID = 3141, Title = "History of Magic", Credits = 4 },
+                new Course { CourseID = 2021, Title = "Herbology", Credits = 3 },
+                new Course { CourseID = 2042, Title = "Potions", Credits = 4 });
+                context.SaveChanges();
+            }
+
+            if (!context.Enrollments.Any())
+            {
+                context.Enrollments.AddRange(
+                    new Enrollment { StudentID = 1, CourseID = 1050, Grade = Grade.A },
+                new Enrollment { StudentID = 1, CourseID = 4022, Grade = Grade.C },
+                new Enrollment { StudentID = 1, CourseID = 4041, Grade = Grade.B },
+                new Enrollment { StudentID = 2, CourseID = 1045, Grade = Grade.B },
+                new Enrollment { StudentID = 2, CourseID = 3141, Grade = Grade.F },
+                new Enrollment { StudentID = 2, CourseID = 2021, Grade = Grade.F },
+                new Enrollment { StudentID = 3, CourseID = 1050 },
+                new Enrollment { StudentID = 4, CourseID = 1050 },
+                new Enrollment { StudentID = 4, CourseID = 4022, Grade = Grade.F },
+                new Enrollment { StudentID = 5, CourseID = 4041, Grade = Grade.C },
+                new Enrollment { StudentID = 6, CourseID = 1045 }
+                );
+
+                context.SaveChanges();
+            }
+
         }
 
     }

@@ -47,12 +47,12 @@ namespace authorizationRoles
             });
 
             services.AddScoped<IAuthorizationHandler,
-                      ContactIsOwnerAuthorizationHandler>();
+                      StudentIsOwnerAuthorizationHandler>();
 
             services.AddSingleton<IAuthorizationHandler,
-                                ContactManagerAuthorizationHandler>();
+                                StudentManagerAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler,
-                                ContactAdministratorsAuthorizationHandler>();
+                                StudentAdministratorsAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
