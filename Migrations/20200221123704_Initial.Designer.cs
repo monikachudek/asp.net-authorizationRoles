@@ -10,8 +10,8 @@ using authorizationRoles.Data;
 namespace authorizationRoles.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200218094329_SeparateContactName")]
-    partial class SeparateContactName
+    [Migration("20200221123704_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -221,9 +221,137 @@ namespace authorizationRoles.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("authorizationRoles.Models.Contact", b =>
+            modelBuilder.Entity("authorizationRoles.Models.Course", b =>
                 {
-                    b.Property<int>("ContactId")
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Credits")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("CourseID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.CourseAssignment", b =>
+                {
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InstructorID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseID", "InstructorID");
+
+                    b.HasIndex("InstructorID");
+
+                    b.ToTable("CourseAssignments");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Department", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("money");
+
+                    b.Property<int?>("InstructorID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DepartmentId");
+
+                    b.HasIndex("InstructorID");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Enrollment", b =>
+                {
+                    b.Property<int>("EnrollmentID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CourseID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("EnrollmentID");
+
+                    b.HasIndex("CourseID");
+
+                    b.HasIndex("StudentID");
+
+                    b.ToTable("Enrollments");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Instructor", b =>
+                {
+                    b.Property<int>("InstructorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("InstructorId");
+
+                    b.ToTable("Instructors");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.OfficeAssignment", b =>
+                {
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("InstructorId");
+
+                    b.ToTable("OfficeAssignments");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Student", b =>
+                {
+                    b.Property<int>("StudentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -237,11 +365,18 @@ namespace authorizationRoles.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("EnrollmentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("OwnerID")
                         .HasColumnType("nvarchar(max)");
@@ -255,9 +390,9 @@ namespace authorizationRoles.Migrations
                     b.Property<string>("Zip")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ContactId");
+                    b.HasKey("StudentId");
 
-                    b.ToTable("Contact");
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -307,6 +442,61 @@ namespace authorizationRoles.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Course", b =>
+                {
+                    b.HasOne("authorizationRoles.Models.Department", "Department")
+                        .WithMany("Courses")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.CourseAssignment", b =>
+                {
+                    b.HasOne("authorizationRoles.Models.Course", "Course")
+                        .WithMany("CourseAssignments")
+                        .HasForeignKey("CourseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("authorizationRoles.Models.Instructor", "Instructor")
+                        .WithMany("CourseAssignments")
+                        .HasForeignKey("InstructorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Department", b =>
+                {
+                    b.HasOne("authorizationRoles.Models.Instructor", "Administrator")
+                        .WithMany()
+                        .HasForeignKey("InstructorID");
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.Enrollment", b =>
+                {
+                    b.HasOne("authorizationRoles.Models.Course", "Course")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("CourseID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("authorizationRoles.Models.Student", "Student")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("StudentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("authorizationRoles.Models.OfficeAssignment", b =>
+                {
+                    b.HasOne("authorizationRoles.Models.Instructor", "Instructor")
+                        .WithOne("OfficeAssignment")
+                        .HasForeignKey("authorizationRoles.Models.OfficeAssignment", "InstructorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

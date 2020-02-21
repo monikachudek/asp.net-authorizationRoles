@@ -31,19 +31,21 @@ namespace authorizationRoles.Pages.Students
                                      string searchString,
                                      int? pageIndex)
         {
-            var contacts = from c in Context.Students
+            var students = from c in Context.Students
                            select c;
+
+            var students_ = students.ToList();
 
             var isAuthorized = User.IsInRole(Authorization.Constants.StudentManagersRole) ||
                                User.IsInRole(Authorization.Constants.StudentAdministratorsRole);
 
             var currentUserId = User.Identity.GetUserId();
 
-            // Only approved contacts are shown UNLESS you're authorized to see them
+            // Only approved students are shown UNLESS you're authorized to see them
             // or you are the owner.
             if (!isAuthorized)
             {
-                contacts = contacts.Where(c => c.Status == StudentStatus.Approved
+                students = students.Where(c => c.Status == StudentStatus.Approved
                                             || c.OwnerID == currentUserId);
             }
 
@@ -60,35 +62,39 @@ namespace authorizationRoles.Pages.Students
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                contacts = contacts.Where(c => c.FirstName.Contains(searchString) ||
+                students = students.Where(c => c.FirstName.Contains(searchString) ||
                             c.LastName.Contains(searchString));
             }
             
             switch (sortOrder)
             {
                 case "name_desc":
-                    contacts = contacts.OrderByDescending(c => c.LastName);
+                    students = students.OrderByDescending(c => c.LastName);
                     break;
                 case "Status":
-                    contacts = contacts.OrderBy(c => c.Status);
+                    students = students.OrderBy(c => c.Status);
                     break;
                 case "status_desc":
-                    contacts = contacts.OrderByDescending(c => c.Status);
+                    students = students.OrderByDescending(c => c.Status);
                     break;
                 default:
-                    contacts = contacts.OrderBy(c => c.LastName);
+                    students = students.OrderBy(c => c.LastName);
                     break;
             }
 
             int pageSize = 10;
             int pageIndexUse = (pageIndex == null) ? 1: (int)pageIndex;
 
-            var count = await contacts.CountAsync();
+            //var count = await students.CountAsync();
+            var count = 5;
 
-            var items = await contacts.Skip(
-                (pageIndexUse - 1) * pageSize).Take(pageSize).ToListAsync();
+            //var items = await students.Skip(
+            //   (pageIndexUse - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            Students = new  PaginatedList<Student>(items, count, pageIndexUse, pageSize);
+            var items = await students.ToListAsync();
+
+            //Students = new  PaginatedList<Student>(items, count, pageIndexUse, pageSize);
+            Students = new PaginatedList<Student>(items, count, pageIndexUse, pageSize);
         }
     }
 }
