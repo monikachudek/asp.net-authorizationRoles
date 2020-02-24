@@ -31,7 +31,6 @@ namespace authorizationRoles.Pages.Courses
             }
 
             Course = await _context.Courses
-                //.Include( c => c.Department)
                 .FirstOrDefaultAsync(m => m.CourseID == id);
 
             if (Course == null)

@@ -29,7 +29,10 @@ namespace authorizationRoles.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses.FirstOrDefaultAsync(m => m.CourseID == id);
+            Course = await _context.Courses
+                .Include(c => c.Department)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.CourseID == id);
 
             if (Course == null)
             {

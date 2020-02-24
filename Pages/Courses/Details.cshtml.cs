@@ -12,9 +12,9 @@ namespace authorizationRoles.Pages.Courses
 {
     public class DetailsModel : PageModel
     {
-        private readonly authorizationRoles.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DetailsModel(authorizationRoles.Data.ApplicationDbContext context)
+        public DetailsModel(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -28,7 +28,10 @@ namespace authorizationRoles.Pages.Courses
                 return NotFound();
             }
 
-            Course = await _context.Courses.FirstOrDefaultAsync(m => m.CourseID == id);
+            Course = await _context.Courses
+                .Include(c => c.Department)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.CourseID == id);
 
             if (Course == null)
             {
