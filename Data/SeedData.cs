@@ -321,7 +321,7 @@ namespace authorizationRoles.Data
             if (!context.Enrollments.Any())
             {
                 context.Enrollments.AddRange(
-                    new Enrollment { StudentID = 1, CourseID = 1050, Grade = Grade.A },
+                new Enrollment { StudentID = 1, CourseID = 1050, Grade = Grade.A },
                 new Enrollment { StudentID = 1, CourseID = 4022, Grade = Grade.C },
                 new Enrollment { StudentID = 1, CourseID = 4041, Grade = Grade.B },
                 new Enrollment { StudentID = 2, CourseID = 1045, Grade = Grade.B },
@@ -331,10 +331,10 @@ namespace authorizationRoles.Data
                 new Enrollment { StudentID = 4, CourseID = 1050 },
                 new Enrollment { StudentID = 4, CourseID = 4022, Grade = Grade.F },
                 new Enrollment { StudentID = 5, CourseID = 4041, Grade = Grade.C },
-                new Enrollment { StudentID = 6, CourseID = 1045 }
+                new Enrollment { StudentID = 2, CourseID = 1045 }
                 );
 
-                context.SaveChanges();
+              context.SaveChanges();
             }
 
         }

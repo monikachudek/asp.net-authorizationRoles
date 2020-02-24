@@ -10,7 +10,7 @@ using authorizationRoles.Data;
 namespace authorizationRoles.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200221123704_Initial")]
+    [Migration("20200224092604_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

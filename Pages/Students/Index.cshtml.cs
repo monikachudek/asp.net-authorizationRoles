@@ -31,6 +31,7 @@ namespace authorizationRoles.Pages.Students
                                      string searchString,
                                      int? pageIndex)
         {
+
             var students = from c in Context.Students
                            select c;
 

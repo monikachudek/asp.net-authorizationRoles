@@ -12,9 +12,9 @@ namespace authorizationRoles.Pages.Courses
 {
     public class IndexModel : PageModel
     {
-        private readonly authorizationRoles.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(authorizationRoles.Data.ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context)
         {
             _context = context;
         }
