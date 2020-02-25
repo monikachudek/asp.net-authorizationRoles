@@ -7,3 +7,9 @@ Roles and privileges:
 * **Managers** can view, approve or reject all contact data but they can edit just their own data.
 * **Administrators** can approve/reject and edit/delete any data.
 
+---
+
+The Authorization project has been modyfied and extended with functionalities from tutorial [Razor Pages with Entity Framework Core](https://docs.microsoft.com/en-us/aspnet/core/data/ef-rp/intro?view=aspnetcore-3.0&tabs=visual-studio).
+
+However, the authorization applies only to Student data.
+
